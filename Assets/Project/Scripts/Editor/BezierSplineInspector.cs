@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Scripts.Track;
+using Scripts.Track.Trajectory;
 using UnityEditor;
 using UnityEngine;
 
@@ -26,29 +28,31 @@ namespace Scripts.Editor
 
             if (_selectedCurve != null)
                 DrawCurveInspector(_selectedCurve);
-            
-            if (GUILayout.Button("Add Curve First")) {
+
+            if (GUILayout.Button("Add Curve First"))
+            {
                 Undo.RecordObject(_bezierSplineBuilder, "Add Curve");
-                _bezierSplineBuilder.AddCurve(false);
-                _selectedCurve = _bezierSplineBuilder.curves.First();
+                _selectedCurve = _bezierSplineBuilder.AddCurve(false);
                 EditorUtility.SetDirty(_bezierSplineBuilder);
             }
-            
-            if (GUILayout.Button("Add Curve Last")) {
+
+            if (GUILayout.Button("Add Curve Last"))
+            {
                 Undo.RecordObject(_bezierSplineBuilder, "Add Curve");
-                _bezierSplineBuilder.AddCurve(true);
-                _selectedCurve = _bezierSplineBuilder.curves.Last();
+                _selectedCurve = _bezierSplineBuilder.AddCurve(true);
                 EditorUtility.SetDirty(_bezierSplineBuilder);
             }
-            
-            if (_bezierSplineBuilder.curves.Count > 0 && GUILayout.Button("Remove Curve")) {
+
+            if (_bezierSplineBuilder.curves.Count > 0 && GUILayout.Button("Remove Curve"))
+            {
                 Undo.RecordObject(_bezierSplineBuilder, "Remove Curve");
                 _bezierSplineBuilder.RemoveCurve(_selectedCurve);
                 _selectedCurve = _bezierSplineBuilder.curves.Count == 0 ? null : _bezierSplineBuilder.curves[0];
                 EditorUtility.SetDirty(_bezierSplineBuilder);
             }
-            
-            if (_selectedCurve != null && GUILayout.Button("Subdivide Curve")) {
+
+            if (_selectedCurve != null && GUILayout.Button("Subdivide Curve"))
+            {
                 Undo.RecordObject(_bezierSplineBuilder, "Subdivide Curve");
                 _selectedCurve = _bezierSplineBuilder.Subdivide(_selectedCurve);
                 EditorUtility.SetDirty(_bezierSplineBuilder);
@@ -83,43 +87,44 @@ namespace Scripts.Editor
             _trackRotation = Tools.pivotRotation == PivotRotation.Local
                 ? _trackTransform.rotation
                 : Quaternion.identity;
-            
+
             if (_selectedCurve == null && _bezierSplineBuilder.curves.Count > 0)
-                _selectedCurve = _bezierSplineBuilder[0];
-            
+                _selectedCurve = _bezierSplineBuilder.curves.First();
+
             return true;
         }
 
         private void DrawCurvePoints(BezierCurve bezierCurve)
         {
-            var transformedCurve = new BezierCurve
-            {
-                startPoint = _trackTransform.TransformPoint(bezierCurve.startPoint),
-                endPoint = _trackTransform.TransformPoint(bezierCurve.endPoint),
-                firstControlPoint = _trackTransform.TransformPoint(bezierCurve.firstControlPoint),
-                secondControlPoint = _trackTransform.TransformPoint(bezierCurve.secondControlPoint)
-            };
-            
+            var transformedCurve = new BezierCurve(startPoint: _trackTransform.TransformPoint(bezierCurve.startPoint),
+                endPoint: _trackTransform.TransformPoint(bezierCurve.endPoint),
+                firstControlPoint: _trackTransform.TransformPoint(bezierCurve.firstControlPoint),
+                secondControlPoint: _trackTransform.TransformPoint(bezierCurve.secondControlPoint));
+
             Handles.DrawBezier(transformedCurve.startPoint, transformedCurve.firstControlPoint,
                 transformedCurve.startPoint, transformedCurve.firstControlPoint, Color.gray, null, LineWidth);
             Handles.DrawBezier(transformedCurve.endPoint, transformedCurve.secondControlPoint,
                 transformedCurve.endPoint, transformedCurve.secondControlPoint, Color.gray, null, LineWidth);
-            
-            _bezierSplineBuilder.SetStartPoint(bezierCurve, DrawPoint(bezierCurve.startPoint));
-            _bezierSplineBuilder.SetEndPoint(bezierCurve, DrawPoint(bezierCurve.endPoint));
-            _bezierSplineBuilder.SetFirstControlPoint(bezierCurve, DrawPoint(bezierCurve.firstControlPoint));
-            _bezierSplineBuilder.SetSecondControlPoint(bezierCurve, DrawPoint(bezierCurve.secondControlPoint));
+
+            if (DrawPoint(bezierCurve.startPoint, out var newPoint))
+                _bezierSplineBuilder.SetStartPoint(bezierCurve, newPoint);
+
+            if (DrawPoint(bezierCurve.endPoint, out newPoint))
+                _bezierSplineBuilder.SetEndPoint(bezierCurve, newPoint);
+
+            if (DrawPoint(bezierCurve.firstControlPoint, out newPoint))
+                _bezierSplineBuilder.SetFirstControlPoint(bezierCurve, newPoint);
+
+            if (DrawPoint(bezierCurve.secondControlPoint, out newPoint))
+                _bezierSplineBuilder.SetSecondControlPoint(bezierCurve, newPoint);
         }
 
         private void DrawCurve(BezierCurve bezierCurve, Color color)
         {
-            var transformedCurve = new BezierCurve
-            {
-                startPoint = _trackTransform.TransformPoint(bezierCurve.startPoint),
-                endPoint = _trackTransform.TransformPoint(bezierCurve.endPoint),
-                firstControlPoint = _trackTransform.TransformPoint(bezierCurve.firstControlPoint),
-                secondControlPoint = _trackTransform.TransformPoint(bezierCurve.secondControlPoint)
-            };
+            var transformedCurve = new BezierCurve(startPoint: _trackTransform.TransformPoint(bezierCurve.startPoint),
+                endPoint: _trackTransform.TransformPoint(bezierCurve.endPoint),
+                firstControlPoint: _trackTransform.TransformPoint(bezierCurve.firstControlPoint),
+                secondControlPoint: _trackTransform.TransformPoint(bezierCurve.secondControlPoint));
 
             Handles.DrawBezier(transformedCurve.startPoint, transformedCurve.endPoint,
                 transformedCurve.firstControlPoint, transformedCurve.secondControlPoint,
@@ -139,44 +144,52 @@ namespace Scripts.Editor
             Repaint();
         }
 
-        private Vector3 DrawPoint(Vector3 point)
+        private bool DrawPoint(Vector3 point, out Vector3 result)
         {
             point = _trackTransform.TransformPoint(point);
             EditorGUI.BeginChangeCheck();
             point = Handles.DoPositionHandle(point, _trackRotation);
             point = _trackTransform.InverseTransformPoint(point);
 
-            if (!EditorGUI.EndChangeCheck()) return point;
+            result = point;
+
+            if (!EditorGUI.EndChangeCheck()) return false;
 
             Undo.RecordObject(_bezierSplineBuilder, "Move Point");
             EditorUtility.SetDirty(_bezierSplineBuilder);
 
-            return point;
+            return true;
         }
 
         private void DrawCurveInspector(BezierCurve bezierCurve)
         {
             GUILayout.Label("Selected Curve");
 
-            _bezierSplineBuilder.SetStartPoint(bezierCurve, DrawPointInspector(bezierCurve.startPoint, "First Point"));
-            _bezierSplineBuilder.SetEndPoint(bezierCurve, DrawPointInspector(bezierCurve.endPoint, "Second Point"));
-            _bezierSplineBuilder.SetFirstControlPoint(bezierCurve,
-                DrawPointInspector(bezierCurve.firstControlPoint, "First Control Point"));
-            _bezierSplineBuilder.SetSecondControlPoint(bezierCurve,
-                DrawPointInspector(bezierCurve.secondControlPoint, "Second Control Point"));
+            if (DrawPointInspector(bezierCurve.startPoint, "First Point", out var newPoint))
+                _bezierSplineBuilder.SetStartPoint(bezierCurve, newPoint);
+
+            if (DrawPointInspector(bezierCurve.endPoint, "Second Point", out newPoint))
+                _bezierSplineBuilder.SetEndPoint(bezierCurve, newPoint);
+
+            if (DrawPointInspector(bezierCurve.firstControlPoint, "First Control Point", out newPoint))
+                _bezierSplineBuilder.SetFirstControlPoint(bezierCurve, newPoint);
+
+            if (DrawPointInspector(bezierCurve.secondControlPoint, "Second Control Point", out newPoint))
+                _bezierSplineBuilder.SetSecondControlPoint(bezierCurve, newPoint);
         }
 
-        private Vector3 DrawPointInspector(Vector3 point, string label)
+        private bool DrawPointInspector(Vector3 point, string label, out Vector3 result)
         {
             EditorGUI.BeginChangeCheck();
             point = EditorGUILayout.Vector3Field(label, point);
+            result = point;
 
-            if (!EditorGUI.EndChangeCheck()) return point;
+            if (!EditorGUI.EndChangeCheck()) return false;
 
             Undo.RecordObject(_bezierSplineBuilder, "Move Point");
             EditorUtility.SetDirty(_bezierSplineBuilder);
 
-            return point;
+            return true;
         }
     }
 }
