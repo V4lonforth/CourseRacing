@@ -14,7 +14,7 @@ namespace Scripts.Track.TrackGeneration
 
         public void DestroyTrack()
         {
-            track.GetComponent<MeshFilter>().mesh = null;
+            track.GetComponent<MeshFilter>().sharedMesh.Clear();
         }
 
         public void GenerateTrack()
@@ -22,11 +22,13 @@ namespace Scripts.Track.TrackGeneration
             DestroyTrack();
 
             var trajectory = splineBuilder.GetTrajectory();
-            track.Trajectory = trajectory;
-            track.GetComponent<MeshFilter>().mesh = Extrude(trajectory);
+            if (trajectory == null) return;
+            
+            track.trajectory = trajectory;
+            Extrude(track.GetComponent<MeshFilter>().sharedMesh, trajectory);
         }
 
-        private Mesh Extrude(ITrajectory trajectory)
+        private void Extrude(Mesh mesh, ITrajectory trajectory)
         {
             var segmentsCount = defaultSegmentSize;
             var path = new OrientedPoint[segmentsCount + 1];
@@ -37,10 +39,10 @@ namespace Scripts.Track.TrackGeneration
                 path[i] = new OrientedPoint(trajectory.GetPosition(t), trajectory.GetOrientation(t));
             }
 
-            return Extrude(path, new TrajectoryLengthCalculator(trajectory, 1024));
+            Extrude(mesh, path, trajectory);
         }
 
-        private Mesh Extrude(OrientedPoint[] path, TrajectoryLengthCalculator lengthCalculator)
+        private void Extrude(Mesh mesh, OrientedPoint[] path, ITrajectory trajectory)
         {
             var verticesInShape = extrudeShape.vertices.Length;
             var segments = path.Length - 1;
@@ -54,6 +56,8 @@ namespace Scripts.Track.TrackGeneration
             var normals = new Vector3[verticesCount];
             var uvs = new Vector2[verticesCount];
 
+            var accumDistance = 0f;
+            
             for (var i = 0; i < edgeLoops; i++)
             {
                 var offset = i * verticesInShape;
@@ -62,7 +66,7 @@ namespace Scripts.Track.TrackGeneration
                     var index = offset + j;
                     vertices[index] = path[i].LocalToWorld(extrudeShape.vertices[j].position);
                     normals[index] = path[i].LocalToWorldDirection(extrudeShape.vertices[j].normal);
-                    uvs[index] = new Vector2(extrudeShape.vertices[j].uCoord, lengthCalculator.GetDistance(i / (float) edgeLoops));
+                    uvs[index] = new Vector2(extrudeShape.vertices[j].uCoord, accumDistance + trajectory.GetDistance(i / (float) edgeLoops));
                 }
             }
 
@@ -86,13 +90,11 @@ namespace Scripts.Track.TrackGeneration
                 }
             }
 
-            var mesh = new Mesh();
             mesh.Clear();
             mesh.vertices = vertices;
             mesh.triangles = triangleIndices;
             mesh.normals = normals;
             mesh.uv = uvs;
-            return mesh;
         }
     }
 }

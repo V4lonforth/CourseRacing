@@ -16,9 +16,9 @@ namespace Scripts.Track.Trajectory
             OnChanged?.Invoke();
         }
 
-        public ITrajectory GetTrajectory()
+        public BezierSpline GetTrajectory()
         {
-            return new CompoundTrajectory(new List<ITrajectory>(curves));
+            return curves.Count > 0 ? new BezierSpline(new List<BezierCurve>(curves)) : null;
         }
 
         public BezierCurve AddCurve(bool isLast)
@@ -37,19 +37,19 @@ namespace Scripts.Track.Trajectory
                 {
                     var lastCurve = curves.Last();
 
-                    curve = new BezierCurve(startPoint: lastCurve.endPoint,
-                        firstControlPoint: MirrorControlPoint(lastCurve.endPoint, lastCurve.secondControlPoint, 1f),
-                        secondControlPoint: MirrorControlPoint(lastCurve.endPoint, lastCurve.secondControlPoint, 2f),
-                        endPoint: MirrorControlPoint(lastCurve.endPoint, lastCurve.secondControlPoint, 3f));
+                    curve = new BezierCurve(startPoint: lastCurve.EndPoint,
+                        firstControlPoint: MirrorControlPoint(lastCurve.EndPoint, lastCurve.SecondControlPoint, 1f),
+                        secondControlPoint: MirrorControlPoint(lastCurve.EndPoint, lastCurve.SecondControlPoint, 2f),
+                        endPoint: MirrorControlPoint(lastCurve.EndPoint, lastCurve.SecondControlPoint, 3f));
                 }
                 else
                 {
                     var firstCurve = curves.First();
 
-                    curve = new BezierCurve(endPoint: firstCurve.startPoint,
-                        secondControlPoint: MirrorControlPoint(firstCurve.startPoint, firstCurve.firstControlPoint, 1f),
-                        firstControlPoint: MirrorControlPoint(firstCurve.startPoint, firstCurve.firstControlPoint, 2f),
-                        startPoint: MirrorControlPoint(firstCurve.startPoint, firstCurve.firstControlPoint, 3f));
+                    curve = new BezierCurve(endPoint: firstCurve.StartPoint,
+                        secondControlPoint: MirrorControlPoint(firstCurve.StartPoint, firstCurve.FirstControlPoint, 1f),
+                        firstControlPoint: MirrorControlPoint(firstCurve.StartPoint, firstCurve.FirstControlPoint, 2f),
+                        startPoint: MirrorControlPoint(firstCurve.StartPoint, firstCurve.FirstControlPoint, 3f));
                 }
             }
 
@@ -65,21 +65,23 @@ namespace Scripts.Track.Trajectory
 
             if (previousCurve == null || nextCurve == null)
             {
-                return curves.Remove(curve);
+                if (!curves.Remove(curve)) return false;
+                OnChanged?.Invoke();
+                return true;
             }
 
             var curveMiddle = curve.GetPosition(0.5f);
             var tangent = curve.GetTangent(0.5f);
 
-            previousCurve.endPoint = curveMiddle;
-            previousCurve.secondControlPoint = curveMiddle - tangent;
+            previousCurve.EndPoint = curveMiddle;
+            previousCurve.SecondControlPoint = curveMiddle - tangent;
 
-            nextCurve.startPoint = curveMiddle;
-            nextCurve.firstControlPoint = curveMiddle + tangent;
-
-            var result = curves.Remove(curve);
+            nextCurve.StartPoint = curveMiddle;
+            nextCurve.FirstControlPoint = curveMiddle + tangent;
+            
+            if (!curves.Remove(curve)) return false;
             OnChanged?.Invoke();
-            return result;
+            return true;
         }
 
         public BezierCurve Subdivide(BezierCurve curve)
@@ -87,15 +89,15 @@ namespace Scripts.Track.Trajectory
             var middlePoint = curve.GetPosition(0.5f);
             var tangent = curve.GetTangent(0.5f);
 
-            var newCurve = new BezierCurve(startPoint: middlePoint, endPoint: curve.endPoint,
+            var newCurve = new BezierCurve(startPoint: middlePoint, endPoint: curve.EndPoint,
                 firstControlPoint: middlePoint + tangent,
-                secondControlPoint: (curve.secondControlPoint - curve.endPoint) / 2f + curve.endPoint);
+                secondControlPoint: (curve.SecondControlPoint - curve.EndPoint) / 2f + curve.EndPoint);
 
             curves.Insert(curves.IndexOf(curve) + 1, newCurve);
 
-            curve.firstControlPoint = (curve.firstControlPoint - curve.startPoint) / 2f + curve.startPoint;
-            curve.endPoint = middlePoint;
-            curve.secondControlPoint = middlePoint - tangent;
+            curve.FirstControlPoint = (curve.FirstControlPoint - curve.StartPoint) / 2f + curve.StartPoint;
+            curve.EndPoint = middlePoint;
+            curve.SecondControlPoint = middlePoint - tangent;
 
             OnChanged?.Invoke();
             return newCurve;
@@ -103,50 +105,50 @@ namespace Scripts.Track.Trajectory
 
         public void SetStartPoint(BezierCurve curve, Vector3 point)
         {
-            curve.startPoint = point;
+            curve.StartPoint = point;
 
             var previousCurve = FindPrevious(curve);
             if (previousCurve != null)
-                previousCurve.endPoint = point;
+                previousCurve.EndPoint = point;
 
-            SetFirstControlPoint(curve, curve.firstControlPoint);
+            SetFirstControlPoint(curve, curve.FirstControlPoint);
             
             OnChanged?.Invoke();
         }
 
         public void SetEndPoint(BezierCurve curve, Vector3 point)
         {
-            curve.endPoint = point;
+            curve.EndPoint = point;
 
             var nextCurve = FindNext(curve);
             if (nextCurve != null)
-                nextCurve.startPoint = point;
+                nextCurve.StartPoint = point;
             
-            SetSecondControlPoint(curve, curve.secondControlPoint);
+            SetSecondControlPoint(curve, curve.SecondControlPoint);
             
             OnChanged?.Invoke();
         }
 
         public void SetFirstControlPoint(BezierCurve curve, Vector3 point)
         {
-            curve.firstControlPoint = point;
+            curve.FirstControlPoint = point;
 
             var previousCurve = FindPrevious(curve);
             if (previousCurve != null)
-                previousCurve.secondControlPoint = MirrorControlPoint(curve.startPoint, curve.firstControlPoint,
-                    (previousCurve.endPoint - previousCurve.secondControlPoint).magnitude);
+                previousCurve.SecondControlPoint = MirrorControlPoint(curve.StartPoint, curve.FirstControlPoint,
+                    (previousCurve.EndPoint - previousCurve.SecondControlPoint).magnitude);
 
             OnChanged?.Invoke();
         }
 
         public void SetSecondControlPoint(BezierCurve curve, Vector3 point)
         {
-            curve.secondControlPoint = point;
+            curve.SecondControlPoint = point;
 
             var nextCurve = FindNext(curve);
             if (nextCurve != null)
-                nextCurve.firstControlPoint = MirrorControlPoint(curve.endPoint, curve.secondControlPoint,
-                    (nextCurve.startPoint - nextCurve.firstControlPoint).magnitude);
+                nextCurve.FirstControlPoint = MirrorControlPoint(curve.EndPoint, curve.SecondControlPoint,
+                    (nextCurve.StartPoint - nextCurve.FirstControlPoint).magnitude);
 
             OnChanged?.Invoke();
         }

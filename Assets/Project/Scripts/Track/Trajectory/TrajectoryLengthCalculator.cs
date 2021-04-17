@@ -7,10 +7,12 @@ namespace Scripts.Track.Trajectory
     public class TrajectoryLengthCalculator
     {
         private readonly ITrajectory _trajectory;
-        private readonly int _sampleSize ;
+        private readonly int _sampleSize;
         
         private float[] _distances;
 
+        public bool Empty => _trajectory == null;
+        
         public TrajectoryLengthCalculator(ITrajectory trajectory, int sampleSize = 8)
         {
             _trajectory = trajectory;
@@ -19,7 +21,7 @@ namespace Scripts.Track.Trajectory
             CalculateDistances(sampleSize);
         }
 
-        private void CalculateDistances(int sampleSize)
+        private void CalculateDistances(int sampleSize = 8)
         {
             _distances = new float[sampleSize];
             _distances[0] = 0f;
