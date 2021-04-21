@@ -36,7 +36,7 @@ namespace Scripts.Vehicles
 
         private void CheckTrackPosition()
         {
-            var distanceOffset = _vehicle.Velocity.magnitude + 3f;
+            var distanceOffset = _vehicle.Velocity.magnitude * Time.deltaTime * 2f + 1f;
             var furtherTrackT = _trajectory.GetT(_currentTrackDistance + distanceOffset);
             var nearTrackT = _trajectory.GetT(_currentTrackDistance - distanceOffset);
             var trajectoryT = _trajectory.GetClosestPointT(_vehicle.GameObject.transform.position, nearTrackT,

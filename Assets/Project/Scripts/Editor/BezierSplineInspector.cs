@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Scripts.Track.Trajectory;
+﻿using Scripts.Track.Trajectory;
 using UnityEditor;
 using UnityEngine;
 

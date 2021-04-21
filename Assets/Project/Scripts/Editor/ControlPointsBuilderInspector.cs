@@ -49,15 +49,14 @@ namespace Scripts.Editor
             EditorGUI.BeginChangeCheck();
             point = Handles.DoPositionHandle(point, _trackRotation);
             point = _trackTransform.InverseTransformPoint(point);
-
-            if (!EditorGUI.EndChangeCheck()) return;
             
             controlPointData.trajectoryPosition = Trajectory.GetClosestPointT(point, 0f, 1f, 0.001f);
-
-            Undo.RecordObject(_controlPointsBuilder, "Move Point");
-            EditorUtility.SetDirty(_controlPointsBuilder);
-
             UpdateControlPoints();
+
+            if (!EditorGUI.EndChangeCheck()) return;
+
+            Undo.RecordObject(_controlPointsBuilder, "Move Control Point");
+            EditorUtility.SetDirty(_controlPointsBuilder);
         }
     }
 }

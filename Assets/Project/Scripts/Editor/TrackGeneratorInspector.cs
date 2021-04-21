@@ -40,7 +40,5 @@ namespace Scripts.Editor
                 trackGenerator.DestroyTrack();
             }
         }
-        
-        
     }
 }

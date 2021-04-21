@@ -7,40 +7,55 @@ namespace Scripts.Track.ControlPoints
     public class ControlPointsBuilder : MonoBehaviour
     {
         [SerializeField] private GameObject controlPointPrefab;
+        [SerializeField] private GameObject finishLinePrefab;
         [SerializeField] private Track track;
 
         public BezierSplineBuilder splineBuilder;
         
         public List<ControlPointData> controlPointsData;
+        public ControlPointData finishLineData;
 
-        [SerializeField] [HideInInspector] private List<ControlPoint> controlPoints = new List<ControlPoint>();
+        [SerializeField] [HideInInspector] private List<ControlPoint> scoreControlPoints = new List<ControlPoint>();
+        [SerializeField] [HideInInspector] private ControlPoint finishLine;
+        
+        private void OnValidate()
+        {
+            GenerateControlPoints();
+        }
         
         public void GenerateControlPoints()
         {
             for (var i = 0; i < controlPointsData.Count; i++)
             {
-                if (i >= controlPoints.Count)
+                ControlPoint controlPoint;
+                if (i >= scoreControlPoints.Count)
                 {
-                    var controlPoint = Instantiate(controlPointPrefab, track.transform).GetComponent<ControlPoint>();
-                    controlPoint.transform.position =
-                        track.trajectory.GetPosition(controlPointsData[i].trajectoryPosition);
-                    
-                    controlPoints.Add(controlPoint);
+                    controlPoint = Instantiate(controlPointPrefab, track.transform).GetComponent<ControlPoint>();
+                    scoreControlPoints.Add(controlPoint);
                 } 
-                else if (controlPoints[i] == null)
+                else if (scoreControlPoints[i] == null)
                 {
-                    var controlPoint = Instantiate(controlPointPrefab, track.transform).GetComponent<ControlPoint>();
-                    controlPoint.transform.position =
-                        track.trajectory.GetPosition(controlPointsData[i].trajectoryPosition);
-
-                    controlPoints[i] = controlPoint;
+                    controlPoint = Instantiate(controlPointPrefab, track.transform).GetComponent<ControlPoint>();
+                    scoreControlPoints[i] = controlPoint;
                 }
                 else
                 {
-                    controlPoints[i].transform.position = 
-                        track.trajectory.GetPosition(controlPointsData[i].trajectoryPosition);
+                    controlPoint = scoreControlPoints[i];
                 }
+                
+                controlPoint.transform.position =
+                    track.trajectory.GetPosition(controlPointsData[i].trajectoryPosition);
+                controlPoint.transform.rotation =
+                    track.trajectory.GetOrientation(controlPointsData[i].trajectoryPosition);
             }
+
+            if (finishLine == null)
+            {
+                finishLine = Instantiate(finishLinePrefab, track.transform).GetComponent<ControlPoint>();
+            }
+
+            finishLine.transform.position = track.trajectory.GetPosition(finishLineData.trajectoryPosition);
+            finishLine.transform.rotation = track.trajectory.GetOrientation(finishLineData.trajectoryPosition);
         }
     }
 }
