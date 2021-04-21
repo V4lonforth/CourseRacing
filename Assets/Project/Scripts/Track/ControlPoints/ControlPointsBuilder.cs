@@ -56,6 +56,8 @@ namespace Scripts.Track.ControlPoints
 
             finishLine.transform.position = track.trajectory.GetPosition(finishLineData.trajectoryPosition);
             finishLine.transform.rotation = track.trajectory.GetOrientation(finishLineData.trajectoryPosition);
+
+            track.trackControlPoints = new TrackControlPoints(scoreControlPoints, finishLine);
         }
     }
 }

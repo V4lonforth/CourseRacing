@@ -1,4 +1,5 @@
-﻿using Scripts.Track.Trajectory;
+﻿using Scripts.Track.ControlPoints;
+using Scripts.Track.Trajectory;
 using Scripts.Vehicles;
 using UnityEngine;
 
@@ -7,7 +8,8 @@ namespace Scripts.Track
     public class Track : MonoBehaviour
     {
         [HideInInspector] public BezierSpline trajectory;
-        [HideInInspector] public int value;
+        [HideInInspector] public TrackControlPoints trackControlPoints;
+        
         public IVehicle PlayerVehicle { get; set; }
 
         public void StartTrack(IVehicle playerVehicle)

@@ -6,11 +6,13 @@ namespace Scripts.Track.ControlPoints
     [Serializable]
     public class TrackControlPoints
     {
-        public void SetupControlPoints(List<ControlPoint> scoreControlPoints, ControlPoint finishLine)
+        public List<ControlPoint> scoreControlPoints;
+        public ControlPoint finishLine;
+
+        public TrackControlPoints(List<ControlPoint> scoreControlPoints, ControlPoint finishLine)
         {
-            foreach (var controlPoint in scoreControlPoints)
-            {
-            }
+            this.scoreControlPoints = scoreControlPoints;
+            this.finishLine = finishLine;
         }
     }
 }
