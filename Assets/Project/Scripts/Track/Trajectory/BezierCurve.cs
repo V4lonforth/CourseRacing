@@ -126,18 +126,15 @@ namespace Scripts.Track.Trajectory
 
             while (sectionEnd - sectionStart > precision)
             {
-                var sectionMiddle = (sectionStart + sectionEnd) / 2f;
-                var middleDistance = (point - GetPosition(sectionMiddle)).sqrMagnitude;
-
                 if (secondDistance <= firstDistance)
                 {
-                    sectionStart = sectionMiddle;
-                    firstDistance = middleDistance;
+                    sectionStart = (sectionStart * 2f + sectionEnd) / 3f;
+                    firstDistance = (point - GetPosition(sectionStart)).sqrMagnitude;
                 }
                 else
                 {
-                    sectionEnd = sectionMiddle;
-                    secondDistance = middleDistance;
+                    sectionEnd = (sectionStart + sectionEnd * 2f) / 3f;
+                    secondDistance = (point - GetPosition(sectionEnd)).sqrMagnitude;;
                 }
             }
 

@@ -41,7 +41,7 @@ namespace Scripts.Editor
                 EditorUtility.SetDirty(_bezierSplineBuilder);
             }
 
-            if (_bezierSplineBuilder.curves.Count > 0 && GUILayout.Button("Remove Curve"))
+            if (_bezierSplineBuilder.curves.Count > 0 && _selectedCurve != null && GUILayout.Button("Remove Curve"))
             {
                 Undo.RecordObject(_bezierSplineBuilder, "Remove Curve");
                 _bezierSplineBuilder.RemoveCurve(_selectedCurve);
@@ -86,8 +86,8 @@ namespace Scripts.Editor
                 ? _trackTransform.rotation
                 : Quaternion.identity;
 
-            if (_selectedCurve == null && _bezierSplineBuilder.curves.Count > 0)
-                _selectedCurve = _bezierSplineBuilder.curves.First();
+            //if (_selectedCurve == null && _bezierSplineBuilder.curves.Count > 0)
+            //    _selectedCurve = _bezierSplineBuilder.curves.First();
 
             return true;
         }

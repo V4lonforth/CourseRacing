@@ -17,12 +17,9 @@ namespace Scripts.Track.TrackGeneration
             track.GetComponent<MeshFilter>().sharedMesh.Clear();
         }
 
-        public void GenerateTrack()
+        public void GenerateTrack(BezierSpline trajectory)
         {
             DestroyTrack();
-
-            var trajectory = splineBuilder.GetTrajectory();
-            if (trajectory == null) return;
             
             track.trajectory = trajectory;
             Extrude(track.GetComponent<MeshFilter>().sharedMesh, trajectory);

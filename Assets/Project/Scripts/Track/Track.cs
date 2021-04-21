@@ -7,6 +7,7 @@ namespace Scripts.Track
     public class Track : MonoBehaviour
     {
         [HideInInspector] public BezierSpline trajectory;
+        [HideInInspector] public int value;
         public IVehicle PlayerVehicle { get; set; }
 
         public void StartTrack(IVehicle playerVehicle)

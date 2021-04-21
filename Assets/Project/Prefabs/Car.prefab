@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 2159238231675535249}
   - component: {fileID: 1102246749513551340}
   - component: {fileID: 1102246749513551339}
-  m_Layer: 0
+  - component: {fileID: 9028062627113120058}
+  m_Layer: 8
   m_Name: Car
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,12 +68,25 @@ MonoBehaviour:
   mass: 1
   canAccelerateBackwards: 0
   gripForward: 2
-  gripSideway: 12
+  gripSideway: 20
   wheelBaseLength: 3
   maxWheelAngle: 27
   angularVelocityToSlip: 160
   slippingSpeedModifier: 0.3
   slippingRotationModifier: 0.6
+--- !u!65 &9028062627113120058
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724360824301044174}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.8907588, y: 0.6334355, z: 4.9685917}
+  m_Center: {x: -0.0035294294, y: 0.547608, z: -0.09605789}
 --- !u!1001 &698404035931952923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -135,10 +149,70 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8646423839389231698, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -4332552802216713578, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -2924894545445028484, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -1337723629495359104, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 13f348402dfd3ab4685a5855076b619f,
         type: 3}
       propertyPath: m_Name
       value: Dodge Challenger SRT Hellcat 2015
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1879229040498286590, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2322442167521025372, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3490423625688231073, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4409771485646805655, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5528860797864257434, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036213049465896255, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8619499180375167610, guid: 13f348402dfd3ab4685a5855076b619f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 13f348402dfd3ab4685a5855076b619f, type: 3}

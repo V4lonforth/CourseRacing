@@ -7,13 +7,18 @@ namespace Scripts.Track.Trajectory
 {
     public class BezierSplineBuilder : MonoBehaviour
     {
-        public Action OnChanged { get; set; }
+        public Action<BezierSpline> OnChanged { get; set; }
 
         public List<BezierCurve> curves;
 
         private void OnValidate()
         {
-            OnChanged?.Invoke();
+            UpdateSpline();
+        }
+
+        private void UpdateSpline()
+        {
+            OnChanged?.Invoke(GetTrajectory());
         }
 
         public BezierSpline GetTrajectory()
@@ -54,7 +59,7 @@ namespace Scripts.Track.Trajectory
             }
 
             curves.Insert(index, curve);
-            OnChanged?.Invoke();
+            UpdateSpline();
             return curve;
         }
 
@@ -66,7 +71,7 @@ namespace Scripts.Track.Trajectory
             if (previousCurve == null || nextCurve == null)
             {
                 if (!curves.Remove(curve)) return false;
-                OnChanged?.Invoke();
+                UpdateSpline();
                 return true;
             }
 
@@ -80,7 +85,7 @@ namespace Scripts.Track.Trajectory
             nextCurve.FirstControlPoint = curveMiddle + tangent;
             
             if (!curves.Remove(curve)) return false;
-            OnChanged?.Invoke();
+            UpdateSpline();
             return true;
         }
 
@@ -99,7 +104,7 @@ namespace Scripts.Track.Trajectory
             curve.EndPoint = middlePoint;
             curve.SecondControlPoint = middlePoint - tangent;
 
-            OnChanged?.Invoke();
+            UpdateSpline();
             return newCurve;
         }
 
@@ -113,7 +118,7 @@ namespace Scripts.Track.Trajectory
 
             SetFirstControlPoint(curve, curve.FirstControlPoint);
             
-            OnChanged?.Invoke();
+            UpdateSpline();
         }
 
         public void SetEndPoint(BezierCurve curve, Vector3 point)
@@ -126,7 +131,7 @@ namespace Scripts.Track.Trajectory
             
             SetSecondControlPoint(curve, curve.SecondControlPoint);
             
-            OnChanged?.Invoke();
+            UpdateSpline();
         }
 
         public void SetFirstControlPoint(BezierCurve curve, Vector3 point)
@@ -138,7 +143,7 @@ namespace Scripts.Track.Trajectory
                 previousCurve.SecondControlPoint = MirrorControlPoint(curve.StartPoint, curve.FirstControlPoint,
                     (previousCurve.EndPoint - previousCurve.SecondControlPoint).magnitude);
 
-            OnChanged?.Invoke();
+            UpdateSpline();
         }
 
         public void SetSecondControlPoint(BezierCurve curve, Vector3 point)
@@ -150,7 +155,7 @@ namespace Scripts.Track.Trajectory
                 nextCurve.FirstControlPoint = MirrorControlPoint(curve.EndPoint, curve.SecondControlPoint,
                     (nextCurve.StartPoint - nextCurve.FirstControlPoint).magnitude);
 
-            OnChanged?.Invoke();
+            UpdateSpline();
         }
 
         private Vector3 MirrorControlPoint(Vector3 curvePoint, Vector3 controlPoint, float length = 0f)
