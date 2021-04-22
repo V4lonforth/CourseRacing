@@ -63,15 +63,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 35
-  acceleration: 9
-  deceleration: 5
-  mass: 1
+  acceleration: 9000
+  deceleration: 5000
+  mass: 1000
   canAccelerateBackwards: 0
   gripForward: 2
   gripSideway: 20
   wheelBaseLength: 3
   maxWheelAngle: 27
   angularVelocityToSlip: 160
+  gcDisplacement: 0.0002
   slippingSpeedModifier: 0.3
   slippingRotationModifier: 0.6
 --- !u!65 &9028062627113120058

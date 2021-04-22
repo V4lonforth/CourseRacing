@@ -20,6 +20,7 @@ namespace Scripts.Vehicles
         [SerializeField] private float wheelBaseLength;
         [SerializeField] private float maxWheelAngle;
         [SerializeField] private float angularVelocityToSlip;
+        [SerializeField] private float gcDisplacement;
 
         [SerializeField] private float slippingSpeedModifier;
         [SerializeField] private float slippingRotationModifier;
@@ -80,7 +81,7 @@ namespace Scripts.Vehicles
         {
             var localVelocity = transform.InverseTransformDirection(_rigidbody.velocity);
 
-            var currentAcceleration = (strength >= 0f ? acceleration : deceleration) * strength * Time.deltaTime;
+            var currentAcceleration = (strength >= 0f ? acceleration : deceleration) / mass * strength * Time.deltaTime;
 
             if (_isSlipping)
                 currentAcceleration *= slippingSpeedModifier;
@@ -108,7 +109,9 @@ namespace Scripts.Vehicles
             var alpha = 90 - Mathf.Abs(steerStrength) * maxWheelAngle;
             var radius = wheelBaseLength / Mathf.Cos(alpha * Mathf.Deg2Rad);
             var speed = _rigidbody.velocity.magnitude;
-            var angularVelocity = speed / radius * Mathf.Rad2Deg;
+            var additionalRadius = mass * speed * gcDisplacement;
+            Debug.Log(additionalRadius);
+            var angularVelocity = speed / (radius + additionalRadius) * Mathf.Rad2Deg;
 
             if (_isSlipping)
             {
