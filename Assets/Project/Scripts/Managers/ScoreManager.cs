@@ -15,6 +15,11 @@ namespace Scripts.Managers
             TrackManager.Instance.OnTrackStart += StartTrack;
         }
 
+        private void Start()
+        {
+            OnScoreChanged?.Invoke(Score);
+        }
+        
         private void StartTrack(Track.Track track)
         {
             foreach (var scoreControlPoint in track.trackControlPoints.scoreControlPoints)
