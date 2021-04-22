@@ -14,22 +14,36 @@ namespace Scripts.Vehicles
         private ITrajectory _trajectory;
 
         private float _currentTrackDistance;
+        private bool _isControlling;
 
         private const float TrajectoryPositionPrecision = 0.0001f;
 
         private void Awake()
         {
             TrackManager.Instance.OnTrackStart += StartTrack;
+            TrackManager.Instance.OnTrackFinish += FinishTrack;
         }
 
         private void StartTrack(Track.Track track)
         {
             _vehicle = track.PlayerVehicle;
             _trajectory = track.trajectory;
+
+            _isControlling = true;
+        }
+
+        private void FinishTrack(Track.Track track)
+        {
+            _vehicle = null;
+            _trajectory = null;
+            
+            _isControlling = false;
         }
 
         private void Update()
         {
+            if (!_isControlling) return;
+            
             CheckTrackPosition();
             ChangeDirection();
         }
