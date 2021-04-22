@@ -62,7 +62,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e192760abd304e178a2f54f0630cad50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 35
+  textAsset: {fileID: 4900000, guid: be8c98677be3227439dcd466b4e35e44, type: 3}
+  maxSpeed: 40
   acceleration: 9000
   deceleration: 5000
   mass: 1000

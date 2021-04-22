@@ -7,6 +7,8 @@ namespace Scripts.Vehicles
         public GameObject GameObject => gameObject;
         public Vector3 Velocity => _rigidbody.velocity;
 
+        [SerializeField] private TextAsset textAsset;
+
         [SerializeField] private float maxSpeed;
         [SerializeField] private float acceleration;
         [SerializeField] private float deceleration;
@@ -34,6 +36,11 @@ namespace Scripts.Vehicles
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
+
+            if (textAsset != null)
+            {
+                JsonUtility.FromJsonOverwrite(textAsset.text, this);
+            }
         }
 
         private void Update()

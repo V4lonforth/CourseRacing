@@ -1,0 +1,6 @@
+﻿{
+  "maxSpeed": 40.0,
+  "acceleration": 9000.0,
+  "deceleration": 5000.0,
+  "mass": 1000.0
+}
