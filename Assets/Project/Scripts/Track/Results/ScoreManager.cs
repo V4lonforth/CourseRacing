@@ -1,9 +1,8 @@
 ﻿using System;
-using Scripts.Track;
 using Scripts.Track.ControlPoints;
 using UnityEngine;
 
-namespace Scripts.Managers
+namespace Scripts.Track.Results
 {
     public class ScoreManager : MonoBehaviour
     {
@@ -20,7 +19,7 @@ namespace Scripts.Managers
             OnScoreChanged?.Invoke(Score);
         }
         
-        private void StartTrack(Track.Track track)
+        private void StartTrack(Scripts.Track.Track track)
         {
             foreach (var scoreControlPoint in track.trackControlPoints.scoreControlPoints)
             {

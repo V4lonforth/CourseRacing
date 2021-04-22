@@ -1367,7 +1367,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1195530273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1923,6 +1923,7 @@ GameObject:
   - component: {fileID: 1253225465}
   - component: {fileID: 1253225464}
   - component: {fileID: 1253225466}
+  - component: {fileID: 1253225467}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -1968,6 +1969,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b228c9b40f4e8cb299d2ce9eda8de1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1253225467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253225463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9beb7f84d2184199b0c1a43f8cec83fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreManager: {fileID: 1253225464}
+  timeManager: {fileID: 1253225466}
 --- !u!1 &1318018577
 GameObject:
   m_ObjectHideFlags: 0

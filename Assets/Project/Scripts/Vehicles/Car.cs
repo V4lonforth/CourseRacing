@@ -117,7 +117,6 @@ namespace Scripts.Vehicles
             var radius = wheelBaseLength / Mathf.Cos(alpha * Mathf.Deg2Rad);
             var speed = _rigidbody.velocity.magnitude;
             var additionalRadius = mass * speed * gcDisplacement;
-            Debug.Log(additionalRadius);
             var angularVelocity = speed / (radius + additionalRadius) * Mathf.Rad2Deg;
 
             if (_isSlipping)

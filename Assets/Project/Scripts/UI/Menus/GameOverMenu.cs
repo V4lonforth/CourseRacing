@@ -1,10 +1,11 @@
-﻿using Scripts.Managers;
-using Scripts.Track;
+﻿using Scripts.Track;
+using Scripts.Track.Results;
+using Scripts.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Scripts.UI
+namespace Scripts.UI.Menus
 {
     public class GameOverMenu : MonoBehaviour
     {
@@ -27,7 +28,7 @@ namespace Scripts.UI
             gameOverMenu.SetActive(true);
             
             scoreText.text = scoreManager.Score.ToString();
-            timeText.text = $"{timeManager.CurrentTime / 60f:00}:{timeManager.CurrentTime % 60f:00.000}";
+            timeText.text = FormatHelper.FormatTime(timeManager.CurrentTime);
         }
 
         public void Restart()

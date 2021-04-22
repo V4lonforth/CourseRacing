@@ -1,8 +1,7 @@
 ﻿using System;
-using Scripts.Track;
 using UnityEngine;
 
-namespace Scripts.Managers
+namespace Scripts.Track.Results
 {
     public class TimeManager : MonoBehaviour
     {
@@ -23,12 +22,12 @@ namespace Scripts.Managers
             OnTimeChanged?.Invoke(CurrentTime);
         }
 
-        private void StartTrack(Track.Track track)
+        private void StartTrack(Scripts.Track.Track track)
         {
             _isTicking = true;
         }
 
-        private void FinishTrack(Track.Track track)
+        private void FinishTrack(Scripts.Track.Track track)
         {
             _isTicking = false;
         }
