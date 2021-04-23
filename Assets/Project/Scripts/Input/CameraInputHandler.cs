@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Scripts.Utils;
 using UnityEngine;
@@ -31,14 +32,17 @@ namespace Scripts.Input
         private bool _isLockedControl;
 
         public int Priority => priority;
-        
+        public bool Active { get; private set; }
+
+
         protected void OnEnable()
         {
             InputManager.Instance.AddInputHandler(this);
+            Active = true;
         }
         protected void OnDisable()
         {
-            InputManager.Instance.RemoveInputHandler(this);
+            Active = false;
         }
 
         private void Update()

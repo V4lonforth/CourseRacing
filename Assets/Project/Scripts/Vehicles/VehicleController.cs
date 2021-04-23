@@ -8,7 +8,6 @@ namespace Scripts.Vehicles
     {
         [SerializeField] private float maxTrackOffset = 3f;
         [SerializeField] private float maxAngleToMaxRotation;
-        [SerializeField] private GameObject tracker;
 
         private IVehicle _vehicle;
         private ITrajectory _trajectory;
@@ -56,8 +55,6 @@ namespace Scripts.Vehicles
             var trajectoryT = _trajectory.GetClosestPointT(_vehicle.GameObject.transform.position, nearTrackT,
                 furtherTrackT, TrajectoryPositionPrecision);
             _currentTrackDistance = _trajectory.GetDistance(trajectoryT);
-
-            tracker.transform.position = _trajectory.GetPosition(trajectoryT);
         }
 
         private void ChangeDirection()

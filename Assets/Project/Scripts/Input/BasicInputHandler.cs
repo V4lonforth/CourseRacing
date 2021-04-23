@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Scripts.Input
 {
@@ -10,14 +11,16 @@ namespace Scripts.Input
         private bool _isPressed;
         
         public int Priority => priority;
+        public bool Active { get; private set; }
 
         protected void OnEnable()
         {
             InputManager.Instance.AddInputHandler(this);
+            Active = true;
         }
         protected void OnDisable()
         {
-            InputManager.Instance.RemoveInputHandler(this);
+            Active = false;
         }
 
         public bool HandleTouch(int inputId, Vector2 inputPosition, TouchPhase inputPhase)

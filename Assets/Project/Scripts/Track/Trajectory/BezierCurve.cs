@@ -52,7 +52,7 @@ namespace Scripts.Track.Trajectory
 
         private TrajectoryLengthCalculator _lengthCalculator;
 
-        private const int SampleSize = 64;
+        private const int SampleSize = 256;
         
         public BezierCurve(Vector3 startPoint, Vector3 endPoint, Vector3 firstControlPoint, Vector3 secondControlPoint)
         {

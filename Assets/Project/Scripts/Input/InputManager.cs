@@ -19,6 +19,7 @@ namespace Scripts.Input
 
         private void Update()
         {
+            _inputHandlers.RemoveAll(i => !i.Active);
             _inputHandlers.Sort((a, b) => b.Priority.CompareTo(a.Priority));
             
             foreach (var touch in UnityEngine.Input.touches)

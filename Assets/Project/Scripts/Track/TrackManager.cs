@@ -11,8 +11,7 @@ namespace Scripts.Track
         public Action<Track> OnTrackFinish { get; set; }
 
         [SerializeField] private TrackInfo trackInfo;
-
-        private Track _track;
+        [SerializeField] private Track track;
 
         private void Start()
         {
@@ -29,14 +28,16 @@ namespace Scripts.Track
                 return;
             }
 
-            _track = Instantiate(trackInfo.trackPrefab).GetComponent<Track>();
-            _track.StartTrack(playerVehicle);
-            OnTrackStart?.Invoke(_track);
+            if (track == null)
+                track = Instantiate(trackInfo.trackPrefab).GetComponent<Track>();
+            
+            track.StartTrack(playerVehicle);
+            OnTrackStart?.Invoke(track);
         }
 
         public void FinishTrack()
         {
-            OnTrackFinish?.Invoke(_track);
+            OnTrackFinish?.Invoke(track);
         }
     }
 }

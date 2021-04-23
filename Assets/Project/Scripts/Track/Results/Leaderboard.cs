@@ -26,9 +26,9 @@ namespace Scripts.Track.Results
         }
 
         public List<TrackResult> SortByTime() => trackResults.OrderBy(r => r.time).ToList();
-        public List<TrackResult> SortByScore() => trackResults.OrderBy(r => r.score).ToList();
+        public List<TrackResult> SortByScore() => trackResults.OrderByDescending(r => r.score).ToList();
 
         public List<TrackResult> SortByScoreAndTime() =>
-            trackResults.OrderBy(r => r.score).ThenBy(r => r.time).ToList();
+            trackResults.OrderByDescending(r => r.score).ThenBy(r => r.time).ToList();
     }
 }

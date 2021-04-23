@@ -6,6 +6,5 @@ namespace Scripts.Track.ControlPoints
     public class ControlPointData
     {
         public float trajectoryPosition;
-        public float offset;
     }
 }
