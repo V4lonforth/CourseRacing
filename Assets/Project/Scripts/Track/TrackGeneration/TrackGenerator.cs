@@ -53,8 +53,6 @@ namespace Scripts.Track.TrackGeneration
             var normals = new Vector3[verticesCount];
             var uvs = new Vector2[verticesCount];
 
-            var accumDistance = 0f;
-            
             for (var i = 0; i < edgeLoops; i++)
             {
                 var offset = i * verticesInShape;
@@ -63,7 +61,7 @@ namespace Scripts.Track.TrackGeneration
                     var index = offset + j;
                     vertices[index] = path[i].LocalToWorld(extrudeShape.vertices[j].position);
                     normals[index] = path[i].LocalToWorldDirection(extrudeShape.vertices[j].normal);
-                    uvs[index] = new Vector2(extrudeShape.vertices[j].uCoord, accumDistance + trajectory.GetDistance(i / (float) edgeLoops));
+                    uvs[index] = new Vector2(extrudeShape.vertices[j].uCoord, trajectory.GetDistance(i / (float) edgeLoops));
                 }
             }
 

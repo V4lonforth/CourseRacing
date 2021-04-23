@@ -9,10 +9,7 @@ namespace Scripts.Vehicles
 
         [SerializeField] private TextAsset textAsset;
 
-        [SerializeField] private float maxSpeed;
-        [SerializeField] private float acceleration;
-        [SerializeField] private float deceleration;
-        [SerializeField] private float mass;
+        private CarCharacteristics _carCharacteristics;
 
         [SerializeField] private bool canAccelerateBackwards;
 
@@ -37,10 +34,7 @@ namespace Scripts.Vehicles
         {
             _rigidbody = GetComponent<Rigidbody>();
 
-            if (textAsset != null)
-            {
-                JsonUtility.FromJsonOverwrite(textAsset.text, this);
-            }
+            _carCharacteristics = JsonUtility.FromJson<CarCharacteristics>(textAsset.text);
         }
 
         private void Update()
@@ -60,7 +54,7 @@ namespace Scripts.Vehicles
             }
 
             localVelocity = ApplyForwardGrip(localVelocity);
-            localVelocity.z = Mathf.Clamp(localVelocity.z, -maxSpeed, maxSpeed);
+            localVelocity.z = Mathf.Clamp(localVelocity.z, -_carCharacteristics.maxSpeed, _carCharacteristics.maxSpeed);
 
             _rigidbody.velocity = transform.TransformDirection(localVelocity);
             _isRotating = false;
@@ -83,12 +77,14 @@ namespace Scripts.Vehicles
             if (localSpeed.z * isForward <= 0f) localSpeed.z = 0f;
             return localSpeed;
         }
-        
+
         public void Accelerate(float strength)
         {
             var localVelocity = transform.InverseTransformDirection(_rigidbody.velocity);
 
-            var currentAcceleration = (strength >= 0f ? acceleration : deceleration) / mass * strength * Time.deltaTime;
+            var currentAcceleration =
+                (strength >= 0f ? _carCharacteristics.acceleration : _carCharacteristics.deceleration) /
+                _carCharacteristics.mass * strength * Time.deltaTime;
 
             if (_isSlipping)
                 currentAcceleration *= slippingSpeedModifier;
@@ -116,7 +112,7 @@ namespace Scripts.Vehicles
             var alpha = 90 - Mathf.Abs(steerStrength) * maxWheelAngle;
             var radius = wheelBaseLength / Mathf.Cos(alpha * Mathf.Deg2Rad);
             var speed = _rigidbody.velocity.magnitude;
-            var additionalRadius = mass * speed * gcDisplacement;
+            var additionalRadius = _carCharacteristics.mass * speed * gcDisplacement;
             var angularVelocity = speed / (radius + additionalRadius) * Mathf.Rad2Deg;
 
             if (_isSlipping)
