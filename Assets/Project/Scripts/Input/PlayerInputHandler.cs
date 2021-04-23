@@ -1,5 +1,4 @@
-﻿using System;
-using Scripts.Track;
+﻿using Scripts.Track;
 using Scripts.Vehicles;
 using UnityEngine;
 
@@ -35,9 +34,9 @@ namespace Scripts.Input
             _isControlling = false;
         }
 
-        protected override void HandlePress(Vector2 inputPosition)
+        protected override bool HandlePress(Vector2 inputPosition)
         {
-            if (!_isControlling || _vehicle == null) return;
+            if (!_isControlling || _vehicle == null) return false;
 
             if (inputPosition.x >= Screen.width / 2f)
             {
@@ -47,16 +46,18 @@ namespace Scripts.Input
             {
                 _vehicle.Accelerate(-1f);
             }
+
+            return true;
         }
 
-        protected override void HandleHold(Vector2 inputPosition)
+        protected override bool HandleHold(Vector2 inputPosition)
         {
-            HandlePress(inputPosition);
+            return HandlePress(inputPosition);
         }
 
-        protected override void HandleRelease(Vector2 inputPosition)
+        protected override bool HandleRelease(Vector2 inputPosition)
         {
-            HandlePress(inputPosition);
+            return HandlePress(inputPosition);
         }
     }
 }

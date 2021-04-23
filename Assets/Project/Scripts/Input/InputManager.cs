@@ -16,13 +16,15 @@ namespace Scripts.Input
         {
             _eventSystem = EventSystem.current;
         }
-    
+
         private void Update()
         {
+            _inputHandlers.Sort((a, b) => b.Priority.CompareTo(a.Priority));
+            
             foreach (var touch in UnityEngine.Input.touches)
             {
                 if (touch.phase != TouchPhase.Began || _eventSystem == null || !_eventSystem.IsPointerOverGameObject(touch.fingerId))
-                    HandleTouch(touch.fingerId, touch.position, touch.phase);
+                    HandleInput(touch.fingerId, TransformPosition(touch.position), touch.phase);
             }
 
             if (UnityEngine.Input.touchCount != 0) return;
@@ -30,15 +32,15 @@ namespace Scripts.Input
             if (UnityEngine.Input.GetMouseButtonDown(0))
             {
                 if (_eventSystem == null || !_eventSystem.IsPointerOverGameObject())
-                    HandleTouch(-1, UnityEngine.Input.mousePosition, TouchPhase.Began);
+                    HandleInput(-1, TransformPosition(UnityEngine.Input.mousePosition), TouchPhase.Began);
             }
             if (UnityEngine.Input.GetMouseButton(0))
-                HandleTouch(-1, UnityEngine.Input.mousePosition, TouchPhase.Moved);
+                HandleInput(-1, TransformPosition(UnityEngine.Input.mousePosition), TouchPhase.Moved);
             if (UnityEngine.Input.GetMouseButtonUp(0))
-                HandleTouch(-1, UnityEngine.Input.mousePosition, TouchPhase.Ended);
+                HandleInput(-1, TransformPosition(UnityEngine.Input.mousePosition), TouchPhase.Ended);
         }
 
-        private bool HandleTouch(int touchId, Vector2 touchPosition, TouchPhase touchPhase)
+        private bool HandleInput(int touchId, Vector2 touchPosition, TouchPhase touchPhase)
         {
             return _inputHandlers.Any(inputHandler => inputHandler.HandleTouch(touchId, touchPosition, touchPhase));
         }
@@ -51,6 +53,11 @@ namespace Scripts.Input
         public bool RemoveInputHandler(IInputHandler inputHandler)
         {
             return _inputHandlers.Remove(inputHandler);
+        }
+
+        public static Vector2 TransformPosition(Vector2 inputPosition)
+        {
+            return inputPosition;
         }
     }
 }

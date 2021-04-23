@@ -1120,6 +1120,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1204,7 +1205,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc14716dcc074eefbf060b3bab384aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: 0, y: 30, z: -10}
+  rotationSpeed: 0.2
+  scaleSpeed: 0.08
+  minCameraDistance: 10
+  maxCameraDistance: 50
+--- !u!114 &963194230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 622479e38b0a4808ba331293f5c5297a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraController: {fileID: 963194229}
+  priority: 100
+  maxTimeToSwipe: 0.1
+  minSpeedToSwipe: 7
 --- !u!1 &1050492737
 GameObject:
   m_ObjectHideFlags: 0
@@ -2106,6 +2126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 095db6275ef248838ae5706884e891b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
 --- !u!114 &1478418895
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,8 +4,12 @@ namespace Scripts.Input
 {
     public abstract class BasicInputHandler: MonoBehaviour, IInputHandler
     {
+        [SerializeField] private int priority;
+        
         private int _inputId;
         private bool _isPressed;
+        
+        public int Priority => priority;
 
         protected void OnEnable()
         {
@@ -40,16 +44,14 @@ namespace Scripts.Input
             _isPressed = true;
             _inputId = inputId;
             
-            HandlePress(inputPosition);
-            return true;
+            return HandlePress(inputPosition);
         }
 
         private bool Hold(int inputId, Vector2 inputPosition)
         {
             if (!_isPressed || _inputId != inputId) return false;
             
-            HandleHold(inputPosition);
-            return true;
+            return HandleHold(inputPosition);
         }
 
         private bool Release(int inputId, Vector2 inputPosition)
@@ -58,12 +60,11 @@ namespace Scripts.Input
             
             _isPressed = false;
             
-            HandleRelease(inputPosition);
-            return true;
+            return HandleRelease(inputPosition);
         }
 
-        protected abstract void HandlePress(Vector2 inputPosition);
-        protected abstract void HandleHold(Vector2 inputPosition);
-        protected abstract void HandleRelease(Vector2 inputPosition);
+        protected abstract bool HandlePress(Vector2 inputPosition);
+        protected abstract bool HandleHold(Vector2 inputPosition);
+        protected abstract bool HandleRelease(Vector2 inputPosition);
     }
 }
